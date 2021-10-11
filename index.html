@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <title>Digit classifier</title>
+
+  <!-- Import TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+</head>
+
+<body>
+  <h1>Digit classifier</h1>
+  <span>Draw a digit on the canvas to let the neural network model predict the digit</span>
+  <br>
+  <canvas id="canvas"></canvas>
+  <br>
+  <button onclick="clearCanvas()">Clear canvas</button>
+  <ul>
+    <li><div >0</div><div style="font-weight: bold;" id="zero">0.00</div></li>
+    <li><div >1</div><div style="font-weight: bold;" id="one"> 0.00</div></li>
+    <li> <div >2</div> <div style="font-weight: bold;" id="two">0.00</div></li>
+    <li> <div >3</div> <div style="font-weight: bold;" id="three">0.00</div></li>
+    <li> <div >4</div> <div style="font-weight: bold;" id="four">0.00</div></li>
+    <li> <div >5</div> <div style="font-weight: bold;" id="five">0.00</div></li>
+    <li> <div >6</div> <div style="font-weight: bold;" id="six">0.00</div></li>
+    <li> <div>7</div> <div style="font-weight: bold;" id="seven">0.00</div></li>
+    <li> <div >8</div> <div style="font-weight: bold;" id="eight">0.00</div></li>
+    <li> <div >9</div> <div style="font-weight: bold;" id="nine">0.00</div></li>
+  </ul>
+  <script src="canvas.js"></script>
+</body>
+</html>

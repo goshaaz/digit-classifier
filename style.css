@@ -1,0 +1,39 @@
+#canvas{
+    border: 2px solid rgb(70, 70, 70);
+    margin-top: 20px;
+}
+body{
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+}
+button{
+    margin-top: 20px;
+    padding:10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+span{
+    padding-bottom: 10px;
+}
+
+ul{
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    padding-left: 0px;
+    margin-top: 20px;
+}
+
+ul li{
+    border: 1px solid rgb(116, 116, 116);
+    display: flex;
+    width:40px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+    padding:10px;
+    border-radius: 2px;
+}
