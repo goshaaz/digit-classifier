@@ -11,6 +11,18 @@ const seven = document.getElementById("seven")
 const eight = document.getElementById("eight")
 const nine = document.getElementById("nine")
 
+const ul0 = document.getElementById("0")
+const ul1 = document.getElementById("1")
+const ul2 = document.getElementById("2")
+const ul3 = document.getElementById("3")
+const ul4 = document.getElementById("4")
+const ul5 = document.getElementById("5")
+const ul6 = document.getElementById("6")
+const ul7 = document.getElementById("7")
+const ul8 = document.getElementById("8")
+const ul9 = document.getElementById("9")
+const ulArr = [ul0, ul1, ul2, ul3, ul4, ul5, ul6, ul7, ul8, ul9]
+
 window.addEventListener("load", () => {
     const canvas = document.querySelector("#canvas");
     const ctx = canvas.getContext("2d");
@@ -93,6 +105,23 @@ async function saveImage(){
         seven.innerHTML = res[0][7].toFixed(2)
         eight.innerHTML = res[0][8].toFixed(2)
         nine.innerHTML = res[0][9].toFixed(2)
+        let max_value = res[0][0]
+        let max_index = 0
+        for(let i = 1; i <= 8; i++){
+            if(res[0][i] > max_value){
+                max_value = res[0][i]
+                max_index = i
+            }
+        }
+
+        for(let i = 0; i <= 8; i++){
+            let ul = ulArr[i]
+            if(max_index == i){
+                ul.style.backgroundColor = "lightgreen"
+            }else{
+                ul.style.backgroundColor = ""
+            }
+        }
     })
 
 }
@@ -115,6 +144,10 @@ function clearCanvas(){
         seven.innerHTML = "0.00"
         eight.innerHTML = "0.00"
         nine.innerHTML = "0.00"
+    for(let i = 0; i <= 8; i++){
+        ulArr[i].style.backgroundColor = ""
+        
+    }    
 }
 
 start()
