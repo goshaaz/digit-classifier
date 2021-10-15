@@ -72,7 +72,7 @@ window.addEventListener("load", () => {
 
     function draw(e){
         if(!painting) return;
-        ctx.lineWidth = 30;
+        ctx.lineWidth = 22;
         ctx.lineCap = "round";
         var pos = getMousePos(canvas, e);
         ctx.lineTo(pos.x, pos.y);
