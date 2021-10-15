@@ -1,5 +1,6 @@
 let MODEL_URL;
 let model;
+let prevTime = Date.now();
 const zero = document.getElementById("zero")
 const one = document.getElementById("one")
 const two = document.getElementById("two")
@@ -10,6 +11,7 @@ const six = document.getElementById("six")
 const seven = document.getElementById("seven")
 const eight = document.getElementById("eight")
 const nine = document.getElementById("nine")
+const valArr = [zero,one,two,three,four,five,six,seven,eight,nine]
 
 const ul0 = document.getElementById("0")
 const ul1 = document.getElementById("1")
@@ -22,6 +24,32 @@ const ul7 = document.getElementById("7")
 const ul8 = document.getElementById("8")
 const ul9 = document.getElementById("9")
 const ulArr = [ul0, ul1, ul2, ul3, ul4, ul5, ul6, ul7, ul8, ul9]
+
+setInterval(() => {
+    let max_value = parseFloat(valArr[0].textContent)
+        let max_index = 0
+        for(let i = 1; i <= 9; i++){
+            if(parseFloat(valArr[i].textContent) > max_value){
+                max_value = parseFloat(valArr[i].textContent)
+                max_index = i
+            }
+        }
+        if(max_value == 0.00){
+            for(let i = 0; i <= 9; i++){
+                let ul = ulArr[i]
+                ul.style.backgroundColor = ""
+            }
+        }else{
+            for(let i = 0; i <= 9; i++){
+                let ul = ulArr[i]
+                if(max_index == i){
+                    ul.style.backgroundColor = "lightgreen"
+                }else{
+                    ul.style.backgroundColor = ""
+                }
+            }
+        }
+}, 300)
 
 window.addEventListener("load", () => {
     const canvas = document.querySelector("#canvas");
@@ -51,7 +79,9 @@ window.addEventListener("load", () => {
         ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y);
-        saveImage()
+        if(Date.now() - prevTime > 300){
+            saveImage()
+        }
     }
 
     canvas.addEventListener('mousedown', startPosition);
@@ -92,7 +122,7 @@ async function saveImage(){
     }
     const batchImageArray = new Float32Array(normalizedData);
     const xs = tf.tensor2d(batchImageArray,[1, 784]);
-    const xs_reshaped = xs.reshape([1, 28, 28])
+    const xs_reshaped = xs.reshape([1, 28, 28, 1])
     const prediction_array = model.predict(xs_reshaped).array()
     prediction_array.then((res) => {
         zero.innerHTML = res[0][0].toFixed(2)
@@ -105,28 +135,12 @@ async function saveImage(){
         seven.innerHTML = res[0][7].toFixed(2)
         eight.innerHTML = res[0][8].toFixed(2)
         nine.innerHTML = res[0][9].toFixed(2)
-        let max_value = res[0][0]
-        let max_index = 0
-        for(let i = 1; i <= 8; i++){
-            if(res[0][i] > max_value){
-                max_value = res[0][i]
-                max_index = i
-            }
-        }
-
-        for(let i = 0; i <= 8; i++){
-            let ul = ulArr[i]
-            if(max_index == i){
-                ul.style.backgroundColor = "lightgreen"
-            }else{
-                ul.style.backgroundColor = ""
-            }
-        }
+        prevTime = Date.now()
     })
 
 }
 const start = async () => {
-    MODEL_URL = './predict_digits_tfjs/model.json';
+    MODEL_URL = './predict_digits_cnn_tfjs/model.json';
     model = await tf.loadLayersModel(MODEL_URL);
 }
 
