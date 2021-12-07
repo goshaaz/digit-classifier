@@ -112,15 +112,47 @@ async function saveImage(){
     smallcanvas.style.border = '2px solid black'
     smallctx.globalCompositeOperation = 'luminosity'
     smallctx.drawImage(canvas, 0, 0, 28, 28)
-    //document.body.appendChild(smallcanvas);
 
 
     const imageData = smallctx.getImageData(0, 0, smallcanvas.width, smallcanvas.height);
-    const normalizedData = []
+    let normalizedData = []
     for (let j = 0; j < imageData.data.length / 4; j++) {
         normalizedData.push((imageData.data[j*4+3])/255)
     }
-    const batchImageArray = new Float32Array(normalizedData);
+    smallctx.clearRect(0,0,28,28)
+
+    const moveInformation = centerDigit(normalizedData);
+
+    if(moveInformation.horizontalDirection == 'left'){
+        if(moveInformation.verticalDirection == 'up'){
+            smallctx.drawImage(canvas, -moveInformation.distanceHorizontal, -moveInformation.distanceVertical, 28, 28)
+        }else{
+            smallctx.drawImage(canvas, -moveInformation.distanceHorizontal, moveInformation.distanceVertical, 28, 28)
+        }
+    }else{
+        if(moveInformation.verticalDirection == 'up'){
+            smallctx.drawImage(canvas, moveInformation.distanceHorizontal, -moveInformation.distanceVertical, 28, 28)
+        }else{
+            smallctx.drawImage(canvas, moveInformation.distanceHorizontal, moveInformation.distanceVertical, 28, 28)
+        }
+    }
+    const imageDataCentered = smallctx.getImageData(0, 0, smallcanvas.width, smallcanvas.height);
+    let normalizedDataCentered = []
+    for (let j = 0; j < imageDataCentered.data.length / 4; j++) {
+        normalizedDataCentered.push((imageDataCentered.data[j*4+3])/255)
+    }
+
+    const arr = new Uint8ClampedArray(28*28*4);
+    for (let i = 0; i < arr.length; i += 4) {
+        arr[i + 0] = normalizedDataCentered[i-i*3]*255;    // R value
+        arr[i + 1] = 0;  // G value
+        arr[i + 2] = 0;    // B value
+        arr[i + 3] = normalizedDataCentered[i-i*3]*255;  // A value
+      }
+    let imgdata = new ImageData(arr, 28, 28);
+    smallctx.putImageData(imgdata, 28, 28);
+    document.body.appendChild(smallcanvas);
+    const batchImageArray = new Float32Array(normalizedDataCentered);
     const xs = tf.tensor2d(batchImageArray,[1, 784]);
     const xs_reshaped = xs.reshape([1, 28, 28, 1])
     const prediction_array = model.predict(xs_reshaped).array()
@@ -139,6 +171,116 @@ async function saveImage(){
     })
 
 }
+
+function centerDigit(normalizedData){
+    let left = 28;
+    let right = 0;
+    let top = null;
+    let bottom = 0;
+    for(var i = 0; i < normalizedData.length; i++){
+        if(normalizedData[i] > 0){
+            if(i % 28 < left){
+                left = i % 28;
+            }
+            if(i % 28 > right){
+                right = i % 28;
+            }
+            if(!top && top != 0){
+                top = Math.floor(i / 28);
+            }
+            if(Math.floor(i/28) > bottom){
+                bottom = Math.floor(i/28);
+            }
+        }
+    }
+    const width = right - left;
+    
+    let newarr = [...normalizedData]
+    if(Math.abs(13 - right) > Math.abs(13 - left)){
+        // translate left to center
+        let moveLeft;
+        if(left < 13){
+            moveLeft = left-13 + Math.floor(width/2);
+        }else{
+            moveLeft = Math.abs(left - 13) + Math.floor(width/2)
+        }
+        const height = Math.abs(top - bottom);
+        if(Math.abs(13 - top) > Math.abs(13 - bottom)){
+            let moveDown;
+            if(bottom > 13){
+                moveDown = 13-bottom + Math.floor(height/2);
+            }else{
+                moveDown = Math.abs(bottom - 13) + Math.floor(height/2)
+            }
+            return {horizontalDirection: 'left', distanceHorizontal: moveLeft, verticalDirection: 'down', distanceVertical: moveDown};
+        }else{
+            let moveUp;
+            if(top < 13){
+                moveUp = top-13 + Math.floor(height/2);
+            }else{
+                moveUp = Math.abs(top - 13) + Math.floor(height/2)
+            }
+            return {horizontalDirection: 'left', distanceHorizontal: moveLeft, verticalDirection: 'up', distanceVertical: moveUp};
+        }
+    }else{
+        // translate right to center
+        const height = Math.abs(top - bottom);
+        let moveRight;
+        if(right > 13){
+            moveRight =  13-right + Math.floor(width/2);
+        }else{
+            moveRight = Math.abs(13 - right) + Math.floor(width/2)
+        }
+        if(Math.abs(13 - top) > Math.abs(13 - bottom)){
+            let moveDown 
+            if(bottom > 13){
+                moveDown = 13-bottom + Math.floor(height/2);
+            }else{
+                moveDown = Math.abs(bottom - 13) + Math.floor(height/2)
+            }
+            return {horizontalDirection: 'right', distanceHorizontal: moveRight, verticalDirection: 'down', distanceVertical: moveDown};
+        }else{
+            let moveUp;
+            if(top < 13){
+                moveUp = top-13 + Math.floor(height/2);
+            }else{
+                moveUp = Math.abs(top - 13) + Math.floor(height/2)
+            }
+            return {horizontalDirection: 'right', distanceHorizontal: moveRight, verticalDirection: 'up', distanceVertical: moveUp};
+        }
+    }
+}
+/*
+function scaleDigit(normalizedData){
+    let left = 28;
+    let right = 0;
+    let top = null;
+    let bottom = 0;
+    for(var i = 0; i < normalizedData.length; i++){
+        if(normalizedData[i] > 0){
+            if(i % 28 < left){
+                left = i % 28;
+            }
+            if(i % 28 > right){
+                right = i % 28;
+            }
+            if(!top && top != 0){
+                top = Math.floor(i / 28);
+            }
+            if(Math.floor(i/28) > bottom){
+                bottom = Math.floor(i/28);
+            }
+        }
+    }
+    const height = Math.abs(top-bottom);
+    const width = Math.abs(right-left);
+
+    //height should be approximately 60% of canvas height
+    let scaleValue = 28*0.6/height;
+    return scaleValue
+}
+*/
+
 const start = async () => {
     MODEL_URL = './predict_digits_cnn_tfjs/model.json';
     model = await tf.loadLayersModel(MODEL_URL);
