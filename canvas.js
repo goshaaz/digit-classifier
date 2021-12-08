@@ -250,36 +250,6 @@ function centerDigit(normalizedData){
         }
     }
 }
-/*
-function scaleDigit(normalizedData){
-    let left = 28;
-    let right = 0;
-    let top = null;
-    let bottom = 0;
-    for(var i = 0; i < normalizedData.length; i++){
-        if(normalizedData[i] > 0){
-            if(i % 28 < left){
-                left = i % 28;
-            }
-            if(i % 28 > right){
-                right = i % 28;
-            }
-            if(!top && top != 0){
-                top = Math.floor(i / 28);
-            }
-            if(Math.floor(i/28) > bottom){
-                bottom = Math.floor(i/28);
-            }
-        }
-    }
-    const height = Math.abs(top-bottom);
-    const width = Math.abs(right-left);
-
-    //height should be approximately 60% of canvas height
-    let scaleValue = 28*0.6/height;
-    return scaleValue
-}
-*/
 
 const start = async () => {
     MODEL_URL = './predict_digits_cnn_tfjs/model.json';
